@@ -1,8 +1,5 @@
 # Sokoban - Warehouse Puzzle Game
 
-<<<<<<< HEAD
-A modern, high-performance implementation of the classic Sokoban puzzle game. It features 150 progressively challenging levels, an infinite procedural level generator, an intelligent real-time Push-BFS solver, multi-language support (English, Hungarian, German), and cross-platform desktop packages for Linux and Windows.
-=======
 A modern, high-performance implementation of the classic Sokoban puzzle game. It features 150 progressively challenging levels, an infinite procedural level generator, an intelligent real-time Push-BFS solver, and cross-platform desktop packages for Linux and Windows.
 >>>>>>> b32897d (update)
 
