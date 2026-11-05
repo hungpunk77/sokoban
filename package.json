@@ -15,10 +15,9 @@
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
     "dist:appimage": "vite build && electron-builder --linux AppImage",
-    "dist:portable": "vite build && electron-builder --linux dir tar.gz",
+    "dist:win": "vite build && electron-builder --win portable nsis",
     "dist:linux": "vite build && electron-builder --linux AppImage dir tar.gz",
-    "dist:win": "vite build && electron-builder --win portable",
-    "dist:win:setup": "vite build && electron-builder --win nsis"
+    "dist:all": "vite build && electron-builder --linux AppImage --win portable nsis"
   },
   "build": {
     "appId": "com.sokoban.game",
