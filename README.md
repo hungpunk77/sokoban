@@ -1,108 +1,38 @@
-# Sokoban - Logikai Raktárjáték
+# Sokoban - Warehouse Puzzle Game
 
-Prémium kivitelezésű, klasszikus Sokoban logikai játék 150 garantáltan megoldható szinttel, procedurális pályagenerátorral és multiplatform (Linux és Windows) támogatással.
-
----
-
-## ⚡ Legelső lépés: Csomagok telepítése (Kötelező!)
-
-Mielőtt bármilyen parancsot futtatnál (fejlesztés vagy csomagolás), töltsd le a szükséges csomagokat:
-
-```bash
-npm install
-```
-
-*(Ez létrehozza a `node_modules` mappát a `vite`, az `electron` és az `electron-builder` eszközökkel.)*
+A modern, high-performance implementation of the classic Sokoban puzzle game. It features 150 progressively challenging levels, an infinite procedural level generator, an intelligent real-time Push-BFS solver, multi-language support (English, Hungarian, German), and cross-platform desktop packages for Linux and Windows.
 
 ---
 
-## 🎮 A Játék Főbb Jellemzői
+## Table of Contents
 
-* **150 Progresszív Szint:** 30 világon keresztül fokozatosan nehezedő kihívás. Már az 1. szint is 3 dobozos, folyosókkal és válaszfalakkal (a későbbi szinteken 4–6 ládával és 60–90+ lépéssel).
-* **Végtelen Procedurális Pályagenerátor:** Garantáltan megoldható új feladványok generálása három nehézségi szinten:
-  * **Könnyű:** 3 láda (24–38 lépéses valódi fejtörő)
-  * **Normál:** 4 láda (36–55 lépéses haladó kihívás)
-  * **Nehéz:** 5 láda (50–80+ lépéses mester feladvány)
-* **Intelligens Push-BFS Megoldó és Tipprendszer:** Villámgyors algoritmus elérhetőségi állapotcsökkentéssel, amely sosem akad el és azonnal megmutatja a helyes lépést.
-* **5 Egyedi Világ & Hangulat:** Ipari Raktár, Ősi Katakomba, Cyberpunk Neon, Kozmikus Állomás, Kristály Palota.
-* **Irányítás:** Nyilak, WASD, egér/érintőképernyős kattintás, képernyő-DPad, lépésszámláló, par-értékek, visszavonás (Undo) és újraindítás.
-
----
-
-## 🛠️ Kész Játék Létrehozása (Build & Export)
-
-### 1. Linux AppImage készítése
-
-Az AppImage egyetlen önálló fájl, amely minden modern Linux disztribúción (Arch, Ubuntu, Fedora, Debian stb.) közvetlenül futtatható.
-
-```bash
-npm run dist:appimage
-```
-* **Kész fájl helye:** `dist-electron/Sokoban-1.0.0.AppImage`
+- [Prerequisites](#prerequisites)
+- [Step 1: Project Setup & Dependencies](#step-1-project-setup--dependencies)
+- [Linux Installation (AppImage & Desktop Integration)](#linux-installation-appimage--desktop-integration)
+  - [Building the AppImage](#1-building-the-appimage)
+  - [Installing via `install.sh`](#2-installing-via-installsh)
+  - [Launching the Game on Linux](#3-launching-the-game-on-linux)
+  - [Uninstallation](#4-uninstallation)
+- [Windows Packages (Installer & Standalone Portable)](#windows-packages-installer--standalone-portable)
+  - [Building Windows Executables](#1-building-windows-executables)
+  - [Windows Installer (`Setup.exe`)](#2-windows-installer-setupexe)
+  - [Standalone Portable Edition (`.exe`)](#3-standalone-portable-edition-exe)
+- [Standalone Linux Python Edition](#standalone-linux-python-edition)
+- [Web Development Server (Browser Mode)](#web-development-server-browser-mode)
+- [Game Features & Gameplay Mechanics](#game-features--gameplay-mechanics)
+- [Project Architecture & Directory Structure](#project-architecture--directory-structure)
 
 ---
 
-### 2. Windows Telepítő és Hordozható (.exe) készítése
+## Prerequisites
 
-Linux alatt is közvetlenül elkészíthető a Windowsos telepítő és a hordozható EXE:
+Before building or running the project, ensure you have the required runtime tools installed on your operating system:
 
-```bash
-npm run dist:win
-```
-* **Kész fájlok a `dist-electron/` mappában:**
-  * `Sokoban Setup 1.0.0.exe` (Hagyományos Windows telepítővarázsló asztali ikonnal és Start menü bejegyzéssel)
-  * `Sokoban 1.0.0.exe` (Hordozható, telepítés nélkül pendrive-ról is egyből induló változat)
+### 1. Node.js & npm (Required for Web, AppImage, and Windows builds)
+- **Node.js**: Version 18.x or later (recommended: Node.js 20+ LTS or 22+)
+- **npm**: Version 9.x or later
 
----
-
-### 3. Minden csomag elkészítése egyszerre
-
-```bash
-npm run dist:all
-```
-
----
-
-## 🐧 Linuxos Telepítés az `install.sh` Segítségével
-
-A projekt tartalmaz egy kényelmes, **rendszergazdai jogokat (`sudo`) NEM igénylő** telepítő szkriptet (`install.sh`), amely KDE Plasma 6 és GNOME asztali környezetekhez is optimalizált.
-
-### Telepítés 2 lépésben:
-
-```bash
-# 1. Készítsd el az AppImage fájlt:
-npm run dist:appimage
-
-# 2. Futtasd a telepítőt:
-./install.sh
-```
-
-### Mit csinál az `install.sh`?
-* **Zero-Root & Zero-FUSE:** A saját felhasználói fiókodba (`~/.local/share/sokoban/`) telepíti a játékot, nem kér jelszót és FUSE modult sem igényel.
-* **Alkalmazásmenü bejegyzés:** Létrehoz egy `sokoban.desktop` fájlt a `~/.local/share/applications/` könyvtárban `StartupWMClass=sokoban` támogatással, így azonnal megjelenik az Alkalmazások / Játékok menüben és a tálcán.
-* **Ikon:** Beregisztrálja a 3D-s Sokoban láda ikont a rendszerbe (`~/.local/share/icons/...`).
-* **Terminál parancs:** A terminálból is bárhonnan elindítható a sima `sokoban` paranccsal.
-
-### Eltávolítás (Uninstall)
-Ha el szeretnéd távolítani a rendszeredből, csak futtasd a telepített uninstaller szkriptet:
-```bash
-~/.local/share/sokoban/uninstaller.sh
-```
-
----
-
-## 🐍 Önálló Linux Python Változat
-
-Ha külső keretrendszerek nélkül szeretnéd futtatni:
-```bash
-python3 sokoban_linux.py
-```
-
----
-
-## 🌐 Fejlesztői Futtatás Böngészőben
-
-```bash
-npm run dev
-```
-Nyisd meg a böngészőben: [http://localhost:3000](http://localhost:3000)
+#### Installing Node.js & npm on Linux:
+- **Arch Linux / Manjaro:**
+  ```bash
+  sudo pacman -S nodejs npm
