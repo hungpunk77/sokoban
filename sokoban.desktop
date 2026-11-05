@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Sokoban
+Comment=Klasszikus Sokoban logikai játék
+Exec=sokoban
+Icon=applications-games
+Terminal=false
+Categories=Game;LogicGame;
+Keywords=sokoban;puzzle;game;logika;
