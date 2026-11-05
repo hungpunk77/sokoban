@@ -88,3 +88,26 @@ export function saveAudioPreferences(prefs: AudioPreferences): void {
     // ignore
   }
 }
+
+const LANG_KEY = 'sokoban_lang_v1';
+
+export function loadLanguage(): 'en' | 'hu' | 'de' {
+  try {
+    const raw = localStorage.getItem(LANG_KEY);
+    if (raw === 'en' || raw === 'hu' || raw === 'de') {
+      return raw;
+    }
+  } catch {
+    // ignore
+  }
+  return 'en'; // Default to English as requested
+}
+
+export function saveLanguage(lang: 'en' | 'hu' | 'de'): void {
+  try {
+    localStorage.setItem(LANG_KEY, lang);
+  } catch {
+    // ignore
+  }
+}
+

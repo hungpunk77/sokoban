@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
-import { X, Dices, Sparkles, Check, Loader2 } from 'lucide-react';
+import { X, Dices, Sparkles, Loader2 } from 'lucide-react';
 import { generateRandomSolvableLevel } from '../game/generator';
 import { LevelData } from '../types/game';
+import { Translations } from '../game/i18n';
 
 interface GeneratorModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLoadGeneratedLevel: (level: LevelData) => void;
+  t: Translations;
 }
 
 export const GeneratorModal: React.FC<GeneratorModalProps> = ({
   isOpen,
   onClose,
   onLoadGeneratedLevel,
+  t,
 }) => {
   const [difficulty, setDifficulty] = useState<'easy' | 'normal' | 'hard'>('normal');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -27,11 +30,15 @@ export const GeneratorModal: React.FC<GeneratorModalProps> = ({
       if (level) {
         onLoadGeneratedLevel(level);
         onClose();
-      } else {
-        alert('Nem sikerült pályát generálni, próbáld újra!');
       }
     }, 100);
   };
+
+  const difficultyTiers = [
+    { id: 'easy', label: t.easy, desc: t.easyDesc },
+    { id: 'normal', label: t.normal, desc: t.normalDesc },
+    { id: 'hard', label: t.hard, desc: t.hardDesc },
+  ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
@@ -40,7 +47,7 @@ export const GeneratorModal: React.FC<GeneratorModalProps> = ({
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition"
-          aria-label="Bezárás"
+          aria-label={t.close}
         >
           <X className="w-5 h-5" />
         </button>
@@ -52,10 +59,10 @@ export const GeneratorModal: React.FC<GeneratorModalProps> = ({
           </div>
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-white">
-              Végtelen Generált Mód
+              {t.generatorTitle}
             </h2>
             <p className="text-sm text-slate-400">
-              Garantáltan megoldható egyedi pályák
+              {t.generatorSubtitle}
             </p>
           </div>
         </div>
@@ -63,15 +70,11 @@ export const GeneratorModal: React.FC<GeneratorModalProps> = ({
         {/* Difficulty Selector */}
         <div className="space-y-3 mb-6">
           <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
-            Válassz Nehézségi Szintet:
+            {t.chooseDifficulty}
           </label>
 
           <div className="grid grid-cols-3 gap-2">
-            {[
-              { id: 'easy', label: 'Könnyű', desc: '3 láda (Kezdő)' },
-              { id: 'normal', label: 'Normál', desc: '4 láda (Haladó)' },
-              { id: 'hard', label: 'Nehéz', desc: '5 láda (Mester)' },
-            ].map((d) => (
+            {difficultyTiers.map((d) => (
               <button
                 key={d.id}
                 onClick={() => setDifficulty(d.id as 'easy' | 'normal' | 'hard')}
@@ -98,7 +101,7 @@ export const GeneratorModal: React.FC<GeneratorModalProps> = ({
         <div className="p-3.5 rounded-2xl bg-slate-800/40 border border-slate-700/50 text-xs text-slate-300 mb-6 flex items-start gap-2.5">
           <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <span>
-            A generátor automatikusan BFS szélességi kereséssel ellenőrzi a labirintust, így a pálya garantáltan megoldható!
+            {t.generatorTip}
           </span>
         </div>
 
@@ -111,12 +114,12 @@ export const GeneratorModal: React.FC<GeneratorModalProps> = ({
           {isGenerating ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Labirintus generálása és ellenőrzése...</span>
+              <span>{t.generating}</span>
             </>
           ) : (
             <>
               <Dices className="w-5 h-5" />
-              <span>Pálya Létrehozása & Indítás</span>
+              <span>{t.generateBtn}</span>
             </>
           )}
         </button>

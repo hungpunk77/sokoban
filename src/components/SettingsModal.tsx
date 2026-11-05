@@ -9,12 +9,17 @@ import {
   Sliders,
   Trash2,
   Check,
+  Globe,
 } from 'lucide-react';
-import { MUSIC_TRACKS, MusicTrackInfo } from '../audio/soundEngine';
+import { MUSIC_TRACKS } from '../audio/soundEngine';
+import { Language, LANGUAGE_OPTIONS, Translations } from '../game/i18n';
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  language: Language;
+  onSelectLanguage: (lang: Language) => void;
+  t: Translations;
   isMuted: boolean;
   sfxVolume: number;
   musicVolume: number;
@@ -31,6 +36,9 @@ interface SettingsModalProps {
 export const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
+  language,
+  onSelectLanguage,
+  t,
   isMuted,
   sfxVolume,
   musicVolume,
@@ -52,7 +60,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition"
-          aria-label="Bezárás"
+          aria-label={t.close}
         >
           <X className="w-5 h-5" />
         </button>
@@ -64,15 +72,50 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-white">
-              Hang & Zene Beállítások
+              {t.settingsTitle}
             </h2>
             <p className="text-sm text-slate-400">
-              5 pályánként változó zenék és hanghatások
+              {t.settingsSubtitle}
             </p>
           </div>
         </div>
 
         <div className="space-y-6 text-sm">
+          {/* LANGUAGE SELECTOR */}
+          <div className="p-4 rounded-2xl bg-slate-800/80 border border-indigo-500/30">
+            <div className="flex items-center gap-2 mb-3">
+              <Globe className="w-4 h-4 text-indigo-400" />
+              <div>
+                <h4 className="font-bold text-white text-sm">
+                  {t.language}
+                </h4>
+                <p className="text-xs text-slate-400">
+                  {t.languageDesc}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              {LANGUAGE_OPTIONS.map((opt) => {
+                const isSelected = language === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => onSelectLanguage(opt.id)}
+                    className={`p-3 rounded-2xl border text-center transition flex flex-col items-center justify-center gap-1 ${
+                      isSelected
+                        ? 'bg-indigo-600 border-indigo-400 text-white font-bold shadow-lg shadow-indigo-600/30'
+                        : 'bg-slate-900/60 border-slate-700 text-slate-300 hover:bg-slate-700/60'
+                    }`}
+                  >
+                    <span className="text-xl">{opt.flag}</span>
+                    <span className="text-xs">{opt.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Master Volume / Mute */}
           <div className="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -86,9 +129,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
               </div>
               <div>
-                <h4 className="font-bold text-white">Némítás (Mute)</h4>
+                <h4 className="font-bold text-white">{t.mute}</h4>
                 <p className="text-xs text-slate-400">
-                  {isMuted ? 'Minden hang kikapcsolva' : 'Hangok és zene aktív'}
+                  {isMuted ? t.mutedDesc : t.unmutedDesc}
                 </p>
               </div>
             </div>
@@ -100,7 +143,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   : 'bg-slate-700 hover:bg-slate-600 text-slate-200'
               }`}
             >
-              {isMuted ? 'Visszakapcsolás' : 'Némítás'}
+              {isMuted ? t.unmuteBtn : t.muteBtn}
             </button>
           </div>
 
@@ -111,7 +154,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <div className="flex justify-between items-center mb-1 text-slate-300 font-medium">
                 <span className="flex items-center gap-2">
                   <Music className="w-4 h-4 text-pink-400" />
-                  Háttérzene Hangerő:
+                  {t.musicVolume}:
                 </span>
                 <span className="font-mono text-xs text-slate-400">
                   {Math.round(musicVolume * 100)}%
@@ -133,7 +176,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <div className="flex justify-between items-center mb-1 text-slate-300 font-medium">
                 <span className="flex items-center gap-2">
                   <Volume2 className="w-4 h-4 text-sky-400" />
-                  Hangeffektek (Lépés, Tolás, Győzelem):
+                  {t.sfxVolume}:
                 </span>
                 <span className="font-mono text-xs text-slate-400">
                   {Math.round(sfxVolume * 100)}%
@@ -157,10 +200,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <div>
                 <h4 className="font-bold text-white flex items-center gap-2">
                   <Music className="w-4 h-4 text-purple-400" />
-                  Zeneszámok (5 pályánként automatikusan vált)
+                  {t.musicJukebox}
                 </h4>
                 <p className="text-xs text-slate-400">
-                  Itt manuálisan is kipróbálhatod vagy beállíthatod a kedvenced:
+                  {t.musicJukeboxDesc}
                 </p>
               </div>
 
@@ -171,12 +214,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 {isMusicPlaying && !isMuted ? (
                   <>
                     <Pause className="w-3.5 h-3.5 fill-current" />
-                    Szünet
+                    {t.pause}
                   </>
                 ) : (
                   <>
                     <Play className="w-3.5 h-3.5 fill-current" />
-                    Lejátszás
+                    {t.play}
                   </>
                 )}
               </button>
@@ -185,6 +228,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="space-y-2">
               {MUSIC_TRACKS.map((track, idx) => {
                 const isCurrent = idx === currentTrackIndex;
+                const worldName = t.worldNames[idx % t.worldNames.length] || track.worldName;
                 return (
                   <div
                     key={track.id}
@@ -213,7 +257,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                           </span>
                         </div>
                         <div className="text-[11px] text-slate-400">
-                          {track.worldName}
+                          {worldName}
                         </div>
                       </div>
                     </div>
@@ -229,17 +273,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
           {/* Reset Progress Section */}
           <div className="pt-2 flex justify-between items-center text-xs text-slate-500 border-t border-slate-800">
-            <span>Mentett pályák és csillagok törlése:</span>
+            <span>{t.resetProgress}</span>
             <button
               onClick={() => {
-                if (confirm('Biztosan törölni szeretnéd a mentett pályarekordokat?')) {
+                if (confirm(t.resetProgressConfirm)) {
                   onResetProgress();
                 }
               }}
               className="flex items-center gap-1 text-red-400 hover:text-red-300 transition"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              Rekordok törlése
+              {t.resetProgressBtn}
             </button>
           </div>
         </div>
@@ -250,7 +294,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             onClick={onClose}
             className="w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold bg-purple-600 hover:bg-purple-500 text-white transition shadow-lg shadow-purple-600/20 active:scale-95"
           >
-            Mentés & Bezárás
+            {t.saveAndClose}
           </button>
         </div>
       </div>

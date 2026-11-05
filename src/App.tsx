@@ -21,11 +21,17 @@ import {
   saveLevelStats,
   loadAudioPreferences,
   saveAudioPreferences,
+  loadLanguage,
+  saveLanguage,
 } from './game/storage';
 import { Direction, LevelData } from './types/game';
+import { Language, TRANSLATIONS } from './game/i18n';
 import { Music } from 'lucide-react';
 
 export default function App() {
+  const [language, setLanguage] = useState<Language>(() => loadLanguage());
+  const t = TRANSLATIONS[language];
+
   const [currentLevelId, setCurrentLevelId] = useState<number>(1);
   const [view, setView] = useState<'menu' | 'playing'>('menu');
 
@@ -87,12 +93,17 @@ export default function App() {
     // Subscribe to sound engine track change
     const unsub = soundEngine.onTrackChange((track: MusicTrackInfo) => {
       setCurrentTrackIndex(track.id - 1);
-      setTrackNotification(`Most szól: ${track.title}`);
-      const t = setTimeout(() => setTrackNotification(null), 3800);
-      return () => clearTimeout(t);
+      setTrackNotification(`${t.nowPlaying}: ${track.title}`);
+      const timer = setTimeout(() => setTrackNotification(null), 3800);
+      return () => clearTimeout(timer);
     });
 
     return () => unsub();
+  }, [t.nowPlaying]);
+
+  const handleSelectLanguage = useCallback((newLang: Language) => {
+    setLanguage(newLang);
+    saveLanguage(newLang);
   }, []);
 
   // Update sound engine on audio state changes
@@ -362,6 +373,7 @@ export default function App() {
           isMuted={isMuted}
           isMusicPlaying={isMusicPlaying}
           currentTrackTitle={currentTrack.title}
+          t={t}
           onStartGame={handleStartGame}
           onOpenLevelSelect={() => setIsLevelSelectOpen(true)}
           onOpenRules={() => setIsRulesOpen(true)}
@@ -378,7 +390,7 @@ export default function App() {
           <HUD
             levelId={level.id}
             levelTitle={level.title}
-            worldName={level.worldName}
+            worldName={t.worldNames[(theme.id - 1) % t.worldNames.length] || level.worldName}
             theme={theme}
             moves={moves}
             pushes={pushes}
@@ -391,6 +403,7 @@ export default function App() {
             isSolvingHint={isSolvingHint}
             hasDeadlock={deadlockedBoxes.length > 0}
             currentTrackTitle={currentTrack.title}
+            t={t}
             onUndo={undo}
             onRedo={redo}
             onRestart={restart}
@@ -429,16 +442,20 @@ export default function App() {
       )}
 
       {/* MODALS */}
-      <RulesModal isOpen={isRulesOpen} onClose={() => setIsRulesOpen(false)} />
+      <RulesModal isOpen={isRulesOpen} onClose={() => setIsRulesOpen(false)} t={t} />
 
       <ControlsModal
         isOpen={isControlsOpen}
         onClose={() => setIsControlsOpen(false)}
+        t={t}
       />
 
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+        language={language}
+        onSelectLanguage={handleSelectLanguage}
+        t={t}
         isMuted={isMuted}
         sfxVolume={sfxVolume}
         musicVolume={musicVolume}
@@ -456,6 +473,7 @@ export default function App() {
         isOpen={isLevelSelectOpen}
         currentLevelId={currentLevelId}
         levelStats={levelStats}
+        t={t}
         onClose={() => setIsLevelSelectOpen(false)}
         onSelectLevel={handleSelectLevel}
         onRerollLevel={(lvlId) => {
@@ -474,6 +492,7 @@ export default function App() {
         stars={winStats?.stars || 1}
         isNewBest={winStats?.isNewBest || false}
         hasNextLevel={true}
+        t={t}
         onNextLevel={handleNextLevel}
         onRestart={restart}
         onOpenLevelSelect={() => {
@@ -485,6 +504,7 @@ export default function App() {
         isOpen={isGeneratorOpen}
         onClose={() => setIsGeneratorOpen(false)}
         onLoadGeneratedLevel={handleLoadGeneratedLevel}
+        t={t}
       />
     </div>
   );

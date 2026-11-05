@@ -1,12 +1,14 @@
 import React from 'react';
-import { X, CheckCircle2, AlertOctagon, HelpCircle, Star, Music, Move, Sparkles } from 'lucide-react';
+import { X, CheckCircle2, AlertOctagon, HelpCircle, Star, Move, Sparkles } from 'lucide-react';
+import { Translations } from '../game/i18n';
 
 interface RulesModalProps {
   isOpen: boolean;
   onClose: () => void;
+  t: Translations;
 }
 
-export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
+export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose, t }) => {
   if (!isOpen) return null;
 
   return (
@@ -16,7 +18,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition"
-          aria-label="Bezárás"
+          aria-label={t.close}
         >
           <X className="w-5 h-5" />
         </button>
@@ -28,10 +30,10 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
           </div>
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-white">
-              A Sokoban Játékszabályai
+              {t.rulesTitle}
             </h2>
             <p className="text-sm text-slate-400">
-              Klasszikus japán raktáros logikai fejtörő (1981)
+              {t.rulesSubtitle}
             </p>
           </div>
         </div>
@@ -42,13 +44,10 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
           <div className="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/60">
             <h3 className="text-base font-bold text-sky-300 flex items-center gap-2 mb-2">
               <CheckCircle2 className="w-4 h-4 text-sky-400" />
-              A Játék Célja
+              {t.rulesTitle}
             </h3>
             <p className="leading-relaxed text-slate-300">
-              A játék célja, hogy a raktáros karaktert irányítva{' '}
-              <strong className="text-amber-300 font-semibold">minden dobozt</strong> eljuttass a{' '}
-              <strong className="text-red-400 font-semibold">kijelölt célmezőkre</strong>.
-              Amikor egy doboz a célra ér, zölden / aranyszínben felvillan! A pálya akkor van kész, ha az összes doboz a helyére került.
+              {t.rule4Desc}
             </p>
           </div>
 
@@ -59,86 +58,79 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
                 1
               </div>
               <div>
-                <h4 className="font-bold text-white mb-1">Csak TOLNI lehet!</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  A dobozokat a karakter előtt tudod eltolni. HÚZNI tilos és lehetetlen!
+                <h4 className="font-bold text-white mb-1">
+                  {t.rule1Title}
+                </h4>
+                <p className="text-xs text-slate-400">
+                  {t.rule1Desc}
                 </p>
               </div>
             </div>
 
             <div className="p-4 rounded-2xl bg-slate-800/40 border border-slate-700/50 flex gap-3">
-              <div className="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-300 flex items-center justify-center shrink-0 font-bold">
+              <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 font-bold">
                 2
               </div>
               <div>
-                <h4 className="font-bold text-white mb-1">Egyszerre 1 doboz</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Két vagy több egymás mögötti dobozt egyszerre nem lehet tolni, a karakter fizikai ereje egy ládára elegendő.
+                <h4 className="font-bold text-white mb-1">
+                  {t.rule2Title}
+                </h4>
+                <p className="text-xs text-slate-400">
+                  {t.rule2Desc}
                 </p>
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-red-950/20 border border-red-500/30 flex gap-3">
-              <div className="w-8 h-8 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center shrink-0">
-                <AlertOctagon className="w-4 h-4" />
+            <div className="p-4 rounded-2xl bg-slate-800/40 border border-slate-700/50 flex gap-3">
+              <div className="w-8 h-8 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 font-bold">
+                3
               </div>
               <div>
-                <h4 className="font-bold text-red-200 mb-1">Vigyázz a Sarkokkal!</h4>
-                <p className="text-xs text-red-300/80 leading-relaxed">
-                  Ha egy dobozt olyan fal melletti sarokba tolsz, ahol nincs célmező, beragad (Deadlock)! A játék ezt piros fénnyel jelzi.
+                <h4 className="font-bold text-white mb-1">
+                  {t.rule3Title}
+                </h4>
+                <p className="text-xs text-slate-400">
+                  {t.rule3Desc}
                 </p>
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 flex gap-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0">
-                <Sparkles className="w-4 h-4" />
+            <div className="p-4 rounded-2xl bg-slate-800/40 border border-slate-700/50 flex gap-3">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 font-bold">
+                4
               </div>
               <div>
-                <h4 className="font-bold text-emerald-200 mb-1">Visszavonás (U)</h4>
-                <p className="text-xs text-emerald-300/80 leading-relaxed">
-                  Bármikor visszavonhatod a rossz lépéseket az <kbd className="px-1 py-0.5 bg-slate-800 rounded font-mono text-[11px]">U</kbd> billentyűvel korlátlanul!
+                <h4 className="font-bold text-white mb-1">
+                  {t.rule4Title}
+                </h4>
+                <p className="text-xs text-slate-400">
+                  {t.rule4Desc}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Music & 5-level worlds */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-500/30 flex items-start gap-3">
-            <Music className="w-5 h-5 text-pink-400 shrink-0 mt-0.5" />
-            <div>
-              <h4 className="font-bold text-purple-200 mb-1">
-                Dinamikus Zenék & Világok 5 Pályánként!
-              </h4>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Minden 5. szint után új világba érkezel egyedi látványvilággal és teljesen új, procedurálisan komponált szintetizátor háttérzenével (Raktár, Katakomba, Neon Mátrix, Kozmosz, Kristály Palota).
-              </p>
-            </div>
-          </div>
-
-          {/* Stars */}
-          <div className="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="flex text-amber-400">
-                <Star className="w-5 h-5 fill-amber-400" />
-                <Star className="w-5 h-5 fill-amber-400" />
-                <Star className="w-5 h-5 fill-amber-400" />
-              </div>
-              <span className="font-semibold text-white">Csillag Értékelés:</span>
-            </div>
-            <span className="text-xs text-slate-400">
-              Teljesítsd a szintet minimális lépésszámmal a 3 csillagos mester szinthez!
-            </span>
+          {/* Strategic Tips */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-sky-950/40 to-slate-800/60 border border-sky-800/40">
+            <h3 className="font-bold text-sky-400 text-sm mb-2 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-sky-400" />
+              {t.tipsTitle}
+            </h3>
+            <ul className="space-y-1.5 text-xs text-slate-300 list-disc list-inside">
+              <li>{t.tip1}</li>
+              <li>{t.tip2}</li>
+              <li>{t.tip3}</li>
+            </ul>
           </div>
         </div>
 
-        {/* Footer Button */}
+        {/* Footer */}
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
             className="w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold bg-sky-500 hover:bg-sky-400 text-slate-950 transition shadow-lg shadow-sky-500/20 active:scale-95"
           >
-            Értem, mehet a játék!
+            {t.close}
           </button>
         </div>
       </div>

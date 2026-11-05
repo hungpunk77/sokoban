@@ -13,6 +13,7 @@ import {
   Trophy,
 } from 'lucide-react';
 import { LevelStats } from '../types/game';
+import { Translations } from '../game/i18n';
 
 interface MainMenuProps {
   currentLevelId: number;
@@ -21,6 +22,7 @@ interface MainMenuProps {
   isMuted: boolean;
   isMusicPlaying: boolean;
   currentTrackTitle: string;
+  t: Translations;
   onStartGame: () => void;
   onOpenLevelSelect: () => void;
   onOpenRules: () => void;
@@ -39,6 +41,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   isMuted,
   isMusicPlaying,
   currentTrackTitle,
+  t,
   onStartGame,
   onOpenLevelSelect,
   onOpenRules,
@@ -49,16 +52,15 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   onToggleMusic,
   onToggleMute,
 }) => {
-  // Count total completed levels and total stars
   const completedCount = Object.values(levelStats).filter((s) => s.completed).length;
   const totalStars = Object.values(levelStats).reduce((acc, s) => acc + (s.stars || 0), 0);
 
   const worldsPreview = [
-    { num: '1-5', name: 'Ipari Raktár', music: 'Warehouse Groove', color: 'from-amber-600 to-amber-900' },
-    { num: '6-10', name: 'Ősi Katakomba', music: 'Ancient Crypt', color: 'from-teal-600 to-emerald-950' },
-    { num: '11-15', name: 'Cyber Neon', music: 'Neon Matrix', color: 'from-purple-600 to-indigo-950' },
-    { num: '16-20', name: 'Kozmikus Állomás', music: 'Cosmic Drift', color: 'from-blue-600 to-slate-900' },
-    { num: '21-25', name: 'Kristály Palota', music: 'Crystal Realm', color: 'from-emerald-500 to-teal-900' },
+    { num: '1-5', name: t.worldNames[0], music: 'Warehouse Groove', color: 'from-amber-600 to-amber-900' },
+    { num: '6-10', name: t.worldNames[1], music: 'Ancient Crypt', color: 'from-teal-600 to-emerald-950' },
+    { num: '11-15', name: t.worldNames[2], music: 'Neon Matrix', color: 'from-purple-600 to-indigo-950' },
+    { num: '16-20', name: t.worldNames[3], music: 'Cosmic Drift', color: 'from-blue-600 to-slate-900' },
+    { num: '21-25', name: t.worldNames[4], music: 'Crystal Realm', color: 'from-emerald-500 to-teal-900' },
   ];
 
   return (
@@ -75,7 +77,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           <span className="px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-semibold text-slate-300 flex items-center gap-1.5 shadow">
             <Trophy className="w-3.5 h-3.5 text-amber-400" />
             <span>
-              {completedCount} / {totalLevels} teljesítve
+              {completedCount} / {totalLevels} {t.completed.toLowerCase()}
             </span>
             <span className="text-amber-400 font-bold ml-1">★ {totalStars}</span>
           </span>
@@ -89,18 +91,18 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                 ? 'bg-pink-500/20 border-pink-500/40 text-pink-300'
                 : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-slate-200'
             }`}
-            title="Háttérzene lejátszása / szüneteltetése"
+            title={isMusicPlaying && !isMuted ? t.pause : t.play}
           >
             <Music className="w-4 h-4" />
             <span className="hidden sm:inline">
-              {isMusicPlaying && !isMuted ? 'Zene szól' : 'Zene szünet'}
+              {isMusicPlaying && !isMuted ? t.nowPlaying : t.pause}
             </span>
           </button>
 
           <button
             onClick={onToggleMute}
             className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 transition shadow"
-            title="Hangok némítása"
+            title={isMuted ? t.unmuteBtn : t.muteBtn}
           >
             {isMuted ? (
               <VolumeX className="w-4 h-4 text-red-400" />
@@ -116,12 +118,12 @@ export const MainMenu: React.FC<MainMenuProps> = ({
         {/* Brand Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-bold tracking-widest uppercase mb-4 shadow">
           <Sparkles className="w-3.5 h-3.5" />
-          Klasszikus Logikai Játék
+          {t.appSubtitle}
         </div>
 
         {/* Big Game Title */}
         <h1 className="text-6xl sm:text-7xl md:text-8xl font-black tracking-tight text-white mb-8 drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]">
-          SOKOBAN
+          {t.appTitle.toUpperCase()}
         </h1>
 
         {/* Primary Action Buttons */}
@@ -133,7 +135,9 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           >
             <Play className="w-6 h-6 fill-current" />
             <span>
-              {completedCount === 0 ? 'JÁTÉK INDÍTÁSA (1. SZINT)' : `FOLYTATÁS (${currentLevelId}. SZINT)`}
+              {completedCount === 0
+                ? `${t.startGame.toUpperCase()} (${t.level.toUpperCase()} 1)`
+                : `${t.continueGame.toUpperCase()} (${t.level.toUpperCase()} ${currentLevelId})`}
             </span>
           </button>
 
@@ -144,7 +148,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               className="py-3 px-4 rounded-xl font-bold text-sm bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 flex items-center justify-center gap-2 transition active:scale-95 shadow"
             >
               <Grid className="w-4 h-4 text-sky-400" />
-              <span>Szintek & Világok</span>
+              <span>{t.levelSelect}</span>
             </button>
 
             <button
@@ -152,7 +156,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               className="py-3 px-4 rounded-xl font-bold text-sm bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 flex items-center justify-center gap-2 transition active:scale-95 shadow"
             >
               <Dices className="w-4 h-4 text-amber-400" />
-              <span>Egyéni Generátor</span>
+              <span>{t.infiniteGenerator}</span>
             </button>
           </div>
 
@@ -163,7 +167,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               className="py-3 px-4 rounded-xl font-bold text-sm bg-slate-800/60 hover:bg-slate-700/70 text-slate-300 border border-slate-700/70 flex items-center justify-center gap-2 transition active:scale-95 shadow"
             >
               <HelpCircle className="w-4 h-4 text-emerald-400" />
-              <span>Szabályok & Cél</span>
+              <span>{t.rules}</span>
             </button>
 
             <button
@@ -171,7 +175,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               className="py-3 px-4 rounded-xl font-bold text-sm bg-slate-800/60 hover:bg-slate-700/70 text-slate-300 border border-slate-700/70 flex items-center justify-center gap-2 transition active:scale-95 shadow"
             >
               <Keyboard className="w-4 h-4 text-amber-400" />
-              <span>Irányítás</span>
+              <span>{t.controls}</span>
             </button>
           </div>
 
@@ -182,7 +186,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               className="w-full py-2.5 px-4 rounded-xl font-semibold text-xs bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 flex items-center justify-center gap-2 transition shadow active:scale-98"
             >
               <Sliders className="w-3.5 h-3.5 text-purple-400" />
-              <span>Zene & Hang Beállítások</span>
+              <span>{t.settings}</span>
             </button>
           </div>
         </div>
@@ -191,7 +195,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
         <div className="pt-4 border-t border-slate-800/80">
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-center gap-1.5">
             <Music className="w-3.5 h-3.5 text-pink-400" />
-            <span>5 Pályánként Változó Világok & Zenék:</span>
+            <span>{t.worldsCount}:</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-left">
@@ -206,11 +210,11 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                   }
                 }}
                 className="p-2.5 rounded-xl bg-slate-900/70 hover:bg-slate-800 border border-slate-800/80 hover:border-sky-500/50 flex flex-col justify-between cursor-pointer transition active:scale-95 group text-left"
-                title={`Kattints az ugráshoz: ${w.name} (${w.num}. szint)`}
+                title={`${w.name} (${t.level} ${w.num})`}
               >
                 <div>
                   <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-sky-400 font-bold group-hover:bg-sky-500 group-hover:text-slate-950 transition">
-                    {w.num}. szint
+                    {t.level} {w.num}
                   </span>
                   <div className="font-bold text-xs text-white mt-1.5 truncate group-hover:text-sky-300 transition">
                     {w.name}
@@ -228,7 +232,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
       {/* Footer Info */}
       <footer className="relative z-10 max-w-4xl w-full mx-auto text-center text-xs text-slate-500 pt-4">
-        Sokoban • Billentyűzet, egér és érintőképernyő támogatás • Minden pálya garantáltan megoldható
+        {t.appTitle} • {t.appSubtitle}
       </footer>
     </div>
   );
